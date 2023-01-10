@@ -203,20 +203,20 @@ void sensor_0(){
   { 
     //news_sensor("sensor_0",50);
     get_json_leds(var, "sensor_0", &A0);
-
     //news_sensor("sensor_1",50);
-    get_json_leds(var, "sensor_1", &A5);
-
+    get_json_leds(var, "sensor_1", &A1);
     //news_sensor("sensor_2",50);
-    get_json_leds(var, "sensor_2", &A6);
-
+    get_json_leds(var, "sensor_2", &A2);
     //news_sensor("sensor_3",50);
-    get_json_leds(var, "sensor_3", &A7);
-
-    get_json(var);
-    get_json(var);
-    get_json(var);
-    get_json(var);
+    get_json_leds(var, "sensor_3", &A3);
+    //news_sensor("sensor_4",50)
+    get_json_leds(var, "sensor_4", &A4);
+    //news_sensor("sensor_5",50);
+    get_json_leds(var, "sensor_5", &A5);
+    //news_sensor("sensor_6",50);
+    get_json_leds(var, "sensor_6", &A6);
+    //news_sensor("sensor_7",50);
+    get_json_leds(var, "sensor_7", &A7);
     Serial.println("END");
     if (Serial.available())
       {
