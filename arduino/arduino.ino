@@ -10,7 +10,7 @@ del proyecto.
 // #include <Adafruit_ADS1X15.h>
 // Adafruit_ADS1115 ads1;
 #include <Wire.h>
-int var = 10;
+int var = 20;
 int SAL = 7 ;
 boolean estado = true;
 const int ledPIN = 13;
@@ -19,6 +19,7 @@ const int red  = 11;
 const int blue = 10;
 const int green = 9;
 String entrada;
+String dato_c;
 
 
 bool prod = true;
@@ -92,10 +93,10 @@ void serialEvent()
 
 
 
-long read_data_led(){
+long read_data_led(const uint8_t* inputPin){
   if (prod==true){
     //return ads1.readADC_SingleEnded(sensor);
-    return analogRead(A1);
+    return analogRead(inputPin);
   }
   else{
     return random(62000,64000);
@@ -109,7 +110,7 @@ long read_data_led(){
 long read_data_ph(){
   if (prod==true){
     //return ads1.readADC_SingleEnded(sensor);
-    delay(100);
+    delay(300);
     return analogRead(A1);
   }
   else{
@@ -140,32 +141,41 @@ long read_data_nivel(){
 }
 
 
-void get_data_array(int &quantity, String &string_c){
+void get_data_array(int &quantity, String &string_c, const uint8_t inputADCpint, String label){
+
   string_c = "\"[";
   long b;
   for (int i = 0; i<quantity;i++){
-    b = read_data_led();
+    b = read_data_led(&A0);
     delay(150);
     string_c = string_c + String(b) + ",";
   }
   string_c = string_c + String(b);
-  string_c = string_c + "]\",";
+  string_c = string_c + "]\"";
+  Serial.print("{");
+  //Serial.print("\"accion\":\"nefelometria\",");
+  Serial.print("\""+ label + "\"" + ":");
+  Serial.print(String(string_c));
+  Serial.println("}");
+
   // return string_c;
 }
 
 
 
+void get_json_leds(int &quantity, String label, const uint8_t* inputPin){
+  String string_c;
+ 
+  get_data_array(quantity, string_c, inputPin, label);
+}
+
 void get_json(int &quantity){
   int V1_ADC;
-  String string_c;
   Serial.print("{");
-  Serial.print("\"accion\":\"monitoreo\",");
-  Serial.print("\"sensor_ambar\":");
-  get_data_array(quantity, string_c);
-  Serial.print(string_c);
-
+  Serial.print("\"accion\":\"monitoreo_fisico_quimico\",");
   Serial.print("\"sensor_ph\":");
   Serial.print(String(read_data_ph()) + "," );
+  delay(100);
 
   Serial.print("\"sensor_orp\":");
   Serial.print(String(read_data_orp()) + "," );
@@ -182,15 +192,28 @@ void get_json(int &quantity){
   
 }
 
+void news_sensor(String sensor, int espera){
+  Serial.println(sensor);
+  delay(espera);
+}
 
 
 void sensor_0(){
   while (true)
-  {
-    delay(1000);
-    //digitalWrite(ledPIN,HIGH);
+  { 
+    //news_sensor("sensor_0",50);
+    get_json_leds(var, "sensor_0", &A0);
+
+    //news_sensor("sensor_1",50);
+    get_json_leds(var, "sensor_1", &A5);
+
+    //news_sensor("sensor_2",50);
+    get_json_leds(var, "sensor_2", &A6);
+
+    //news_sensor("sensor_3",50);
+    get_json_leds(var, "sensor_3", &A7);
+
     get_json(var);
-    //digitalWrite(ledPIN,LOW);
     get_json(var);
     get_json(var);
     get_json(var);
