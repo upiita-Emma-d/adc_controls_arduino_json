@@ -29,37 +29,9 @@ void setup() {
   // initialize serial communications at 9600 bps:
   Serial.begin(9600);
 
-  // if (prod == true ){
-  //   if (!ads1.begin(0x48)) {
-  //     Serial.println("Failed to initialize ADS1.");
-  //     while (1); 
-  //   }
-
-  //   ads1.begin();
-  // }  
-
 
 }
 
-void bomba(int V1_ADC, int SAL, boolean &estado){
-  float V1_AN=5*(float)V1_ADC/1023;
-  if (V1_AN<0.45)
-    {
-      digitalWrite(SAL, HIGH);
-      estado = true;
-    }
-  else if (V1_AN>0.29)
-    {
-      digitalWrite(SAL, LOW);
-      estado = false;
-      }
-  else
-    {
-      digitalWrite(SAL, estado);
-      }
-
-  delay(5);
-  }
   
 void waitForSerial(){
   // Serial.flush();
@@ -71,29 +43,13 @@ void waitForSerial(){
 
 void loop() {
 
-  waitForSerial();
+  //waitForSerial();
+  sensor_0();
   
 }
 
-void serialEvent()
-  {
-    entrada = Serial.readString();
-    entrada.trim();
-    // Control de flujo
 
-    if(entrada.equals("sensor_0")){
-      sensor_0();
-    }  
-
-    Serial.flush();
-    delay(10);                       // wait for a second
-
-  }
-
-
-
-
-long read_data_led(const uint8_t* inputPin){
+long read_data_led(uint8_t inputPin){
   if (prod==true){
     //return ads1.readADC_SingleEnded(sensor);
     return analogRead(inputPin);
@@ -129,104 +85,86 @@ long read_data_orp(){
 }
 
 
-long read_data_nivel(){
-  if (prod==true){
-    //return ads1.readADC_SingleEnded(sensor);
-    delay(100);
-    return analogRead(A3);
-  }
-  else{
-    return random(62000,64000);
-  }
-}
 
-
-void get_data_array(int &quantity, String &string_c, const uint8_t inputADCpint, String label){
+void get_data_array(int &quantity, String &string_c, uint8_t inputADCpint, String label){
 
   string_c = "\"[";
   long b;
   for (int i = 0; i<quantity;i++){
-    b = read_data_led(&A0);
+    b = read_data_led(inputADCpint);
     delay(150);
     string_c = string_c + String(b) + ",";
   }
   string_c = string_c + String(b);
   string_c = string_c + "]\"";
   Serial.print("{");
-  //Serial.print("\"accion\":\"nefelometria\",");
   Serial.print("\""+ label + "\"" + ":");
   Serial.print(String(string_c));
   Serial.println("}");
-
-  // return string_c;
 }
 
 
 
-void get_json_leds(int &quantity, String label, const uint8_t* inputPin){
+void get_json_leds(int &quantity, String label, int inputPin){
   String string_c;
- 
-  get_data_array(quantity, string_c, inputPin, label);
-}
+  uint8_t pin;
+  if (inputPin == 0) {
+    pin = A0;
+  } else if (inputPin == 1) {
+    pin = A1;
 
-void get_json(int &quantity){
-  int V1_ADC;
+  } else if (inputPin == 2) {
+    pin = A2;
+  } else if (inputPin == 3) {
+    pin = A3;
+  } else if (inputPin == 4) {
+    pin = A4;
+  } else if (inputPin == 5) {
+    pin = A5;
+  } else if (inputPin == 6) {
+    pin = A6;
+  }else if (inputPin == 7) {
+    pin = A7;
+  }
+  //Serial.println(String(pin));
+  get_data_array(quantity, string_c, pin, label);
+  } 
+
+void espacios(String mensaje){
   Serial.print("{");
-  Serial.print("\"accion\":\"monitoreo_fisico_quimico\",");
-  Serial.print("\"sensor_ph\":");
-  Serial.print(String(read_data_ph()) + "," );
-  delay(100);
-
-  Serial.print("\"sensor_orp\":");
-  Serial.print(String(read_data_orp()) + "," );
-
-  Serial.print("\"sensor_nivel\":");
-  V1_ADC=read_data_nivel();
-  Serial.print(String(V1_ADC) + ",");
-
-  bomba(V1_ADC, SAL, estado);
-
-  Serial.print("\"estado\":");
-  Serial.print(String(estado));
+  Serial.print("\"accion\":");
+  Serial.print("\"" +String(mensaje) + "\"");
   Serial.println("}");
-  
 }
-
-void news_sensor(String sensor, int espera){
-  Serial.println(sensor);
-  delay(espera);
-}
-
 
 void sensor_0(){
   while (true)
   { 
-    //news_sensor("sensor_0",50);
-    get_json_leds(var, "sensor_0", &A0);
-    //news_sensor("sensor_1",50);
-    get_json_leds(var, "sensor_1", &A1);
-    //news_sensor("sensor_2",50);
-    get_json_leds(var, "sensor_2", &A2);
-    //news_sensor("sensor_3",50);
-    get_json_leds(var, "sensor_3", &A3);
-    //news_sensor("sensor_4",50)
-    get_json_leds(var, "sensor_4", &A4);
-    //news_sensor("sensor_5",50);
-    get_json_leds(var, "sensor_5", &A5);
-    //news_sensor("sensor_6",50);
-    get_json_leds(var, "sensor_6", &A6);
-    //news_sensor("sensor_7",50);
-    get_json_leds(var, "sensor_7", &A7);
+    espacios("led_ambar");
+    get_json_leds(var, "sensor_0_amb", 0);
+    espacios("led_ambar");
+    get_json_leds(var, "sensor_1_amb", 1);
+    espacios("uv_1");
+    get_json_leds(var, "sensor_uv_0", 2);
+    espacios("uv_2");
+    get_json_leds(var, "sensor_uv_1", 3);
+
+    espacios("led_rojo");
+    get_json_leds(var, "sensor_4_r", 4);
+    espacios("led_verde");
+    get_json_leds(var, "sensor_4_v", 4);
+    espacios("led_azul");
+    get_json_leds(var, "sensor_4_a", 4);
+
+    espacios("led_rojo");
+    get_json_leds(var, "sensor_5_r", 5);
+    espacios("led_verde");
+    get_json_leds(var, "sensor_5_v", 5);
+    espacios("led_azul");
+    get_json_leds(var, "sensor_5_a", 5);
+
     Serial.println("END");
-    if (Serial.available())
-      {
-        entrada = Serial.readString();
-        Serial.println(entrada);
-        entrada.trim();
-        if (entrada=="salir"){
-          break;
-        }
-    }
+
 
   
   }
