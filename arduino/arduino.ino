@@ -11,7 +11,7 @@ del proyecto.
 // Adafruit_ADS1115 ads1;
 #include <Wire.h>
 int var = 20;
-int SAL = 7 ;
+int SAL = 8 ;
 boolean estado = true;
 const int ledPIN = 13;
 const int ambar = 12;
@@ -163,6 +163,10 @@ void sensor_0(){
     espacios("led_azul");
     get_json_leds(var, "sensor_5_a", 5);
 
+    digitalWrite(SAL , HIGH);   // poner el Pin en HIGH
+    delay(2000);                   // esperar un segundo
+    digitalWrite(SAL , LOW);    // poner el Pin en LOW
+    delay(50); 
     Serial.println("END");
 
 
