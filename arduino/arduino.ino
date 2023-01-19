@@ -140,10 +140,10 @@ void espacios(String mensaje){
 void sensor_0(){
   while (true)
   { 
-    espacios("led_ambar");
-    get_json_leds(var, "sensor_0_amb", 0);
-    espacios("led_ambar");
-    get_json_leds(var, "sensor_1_amb", 1);
+    // espacios("led_ambar");
+    // get_json_leds(var, "sensor_0_amb", 0);
+    // espacios("led_ambar");
+    // get_json_leds(var, "sensor_1_amb", 1);
     espacios("uv_1");
     get_json_leds(var, "sensor_uv_0", 2);
     espacios("uv_2");
