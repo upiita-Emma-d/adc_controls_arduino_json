@@ -164,7 +164,7 @@ void sensor_0(){
     get_json_leds(var, "sensor_5_a", 5);
 
     digitalWrite(SAL , HIGH);   // poner el Pin en HIGH
-    delay(2000);                   // esperar un segundo
+    delay(3000);                   // esperar un segundo
     digitalWrite(SAL , LOW);    // poner el Pin en LOW
     delay(50); 
     Serial.println("END");
