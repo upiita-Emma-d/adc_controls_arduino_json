@@ -1,10 +1,3 @@
-/**
-Tesis.ino
-Este archivo será el punto de entrada del proyecto, controlará todo el funcionamiento total
-del proyecto.
-
-*/
-
 #include "math.h"
 
 // #include <Adafruit_ADS1X15.h>
@@ -22,7 +15,7 @@ String entrada;
 String dato_c;
 
 
-bool prod = true;
+
 
 void setup() {
   pinMode(SAL,OUTPUT);
@@ -33,13 +26,6 @@ void setup() {
 }
 
   
-void waitForSerial(){
-  // Serial.flush();
-  while (!Serial.available()){
-    // Wait
-  }
-}
-
 
 void loop() {
 
@@ -58,32 +44,6 @@ long read_data_led(uint8_t inputPin){
     return random(62000,64000);
   }
 }
-
-
-
-
-
-long read_data_ph(){
-  if (prod==true){
-    //return ads1.readADC_SingleEnded(sensor);
-    delay(300);
-    return analogRead(A1);
-  }
-  else{
-    return random(62000,64000);
-  }
-}
-
-long read_data_orp(){
-  if (prod==true){
-    //return ads1.readADC_SingleEnded(sensor);
-    return analogRead(A2);
-  }
-  else{
-    return random(62000,64000);
-  }
-}
-
 
 
 void get_data_array(int &quantity, String &string_c, uint8_t inputADCpint, String label){
@@ -140,10 +100,6 @@ void espacios(String mensaje){
 void sensor_0(){
   while (true)
   { 
-    // espacios("led_ambar");
-    // get_json_leds(var, "sensor_0_amb", 0);
-    // espacios("led_ambar");
-    // get_json_leds(var, "sensor_1_amb", 1);
     espacios("uv_1");
     get_json_leds(var, "sensor_uv_0", 2);
     espacios("uv_2");
@@ -163,9 +119,9 @@ void sensor_0(){
     espacios("led_azul");
     get_json_leds(var, "sensor_5_a", 5);
 
-    digitalWrite(SAL , HIGH);   // poner el Pin en HIGH
+    digitalWrite(SAL , LOW);   // poner el Pin en HIGH
     delay(3000);                   // esperar un segundo
-    digitalWrite(SAL , LOW);    // poner el Pin en LOW
+    digitalWrite(SAL , HIGH);    // poner el Pin en LOW
     delay(50); 
     Serial.println("END");
 
